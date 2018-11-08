@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="todo.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="mainDiv" class="card">
+            <div class="header">
+                <img class="TLH-logo" src="TLH.jpg" alt="TLH Logo">
+                <h2>Call Log Creator</h2>
+                <p>Check off the boxes while you're on the phone to create a detailed call log.</p>
+                <input type="text" id="myInput" placeholder="Add New..">
+                <span onclick="newElement()" class="addBtn">Add</span>
+                <textarea name="callLog" cols="40" rows="5" id="callLog"></textarea>
+                <span onclick="copyText()" class="copyTextBtn">Copy to Clipboard</span>
+            </div>
+
+            <ul id="myUL">
+                <li>topic 1</li>
+                <li>topic 2</li>
+                <li>topic 3</li>
+                <li>topic 4</li>
+                <li>topic 5</li>
+                <li>topic 6</li>
+            </ul>
+        </div>
+    </div>
+    <script src="todo.js"></script>
+</body>
+
+</html>
