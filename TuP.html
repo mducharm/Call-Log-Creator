@@ -31,7 +31,8 @@
 ul {
     margin: 0;
     padding: 0;
-    width: 65%;
+    padding-bottom: 2%;
+    width: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -43,7 +44,7 @@ ul li {
     position: relative;
     width: 30%;
     flex-grow: 1;
-    padding: 12px 20px 12px 40px;
+    padding: 12px 30px 12px 40px;
     display: flex;
     align-items: center;
     background: #eee;
@@ -101,6 +102,7 @@ ul li.checked::before {
     width: 35%;
     color: black;
     text-align: center;
+    align-self: stretch;
 }
 
 .header:after {
@@ -161,6 +163,24 @@ textarea {
     transition: 0.3s;
     border-radius: 0;
 }
+
+.list-container {
+    width: 65%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.list-header {
+    width: 100%;
+    padding: 12px 20px 12px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #eee;
+    border: 1px solid rgba(85, 85, 85, 0.342);
+    font-size: 18px;
+}
 </style>
 
 </head>
@@ -179,17 +199,32 @@ textarea {
                 <span onclick="copyText()" class="copyTextBtn">Copy to Clipboard</span>
             </div>
 
-            <ul id="myUL">
-                <li>Financial Plan</li>
-                <li>FAFSA</li>
-                <li>Types of Loans</li>
-                <li>Responsible Borrowing</li>
-                <li>Payment Plans</li>
-                <li>Tuition Cost</li>
-                <li>Connect</li>
-                <li>SAP</li>
-                <li>TuP Role</li>
-            </ul>
+            <div class="list-container">
+                <div class="list-header">Identify Financial Plan</div>
+                <ul id="planUL">
+                    <li>FA</li>
+                    <li>OOP</li>
+                    <li>Payment Plan</li>
+                    <li>Military Benefits</li>
+                    <li>Private Loans</li>
+                    <li>Scholarships</li>
+                    <li>Tuition Reimbursement</li>
+                    <li>Tuition Assistance</li>
+                    <li>Third-Party</li>
+                </ul>
+                <div class="list-header">General</div>
+                <ul id="myUL">
+                    <li>FAFSA</li>
+                    <li>Types of Loans</li>
+                    <li>Responsible Borrowing</li>
+                    <li>Tuition Cost</li>
+                    <li>Reviewed Scholarship</li>
+                    <li>Disbursement & Refunds</li>
+                    <li>SAP Policy</li>
+                    <li>Tuition Due Date</li>
+                    <li>TuP Role</li>
+                </ul>
+            </div>
         </div>
     </div>
     <script>
@@ -215,26 +250,82 @@ textarea {
             }
         }
 
-        var list = document.querySelector('ul');
-        list.addEventListener('click', function (ev) {
+        // var list = document.querySelector('ul');
+        var planList = document.querySelector('#planUL');
+        planList.addEventListener('click', function (ev) {
             if (ev.target.tagName === 'LI') {
                 ev.target.classList.toggle('checked');
 
+
+                var callLogString = "V2V\n"
                 // update call log box based on checked items
+                var planCheckedItems = document.getElementById("planUL").getElementsByClassName("checked");
+                var generalCheckedItems = document.getElementById("myUL").getElementsByClassName("checked");
                 var checkedItems = document.getElementsByClassName("checked");
                 var i;
-                var callLogString = "V2V \nDiscussed the following: ";
-                for (i = 0; i < checkedItems.length; i++) {
-                    if (i !== checkedItems.length - 1) {
-                        callLogString += checkedItems[i].firstChild.data + ", ";
-                    } else {
-                        callLogString += checkedItems[i].firstChild.data + " ";
+
+                if (planCheckedItems.length > 0) {
+                    callLogString += "Identified plan: "
+                    for (i = 0; i < planCheckedItems.length; i++) {
+                        if (i !== planCheckedItems.length - 1) {
+                            callLogString += planCheckedItems[i].firstChild.data + ", ";
+                        } else {
+                            callLogString += planCheckedItems[i].firstChild.data + "\n";
+                        }
                     }
-                    document.getElementById("callLog").innerHTML = callLogString;
                 }
-                console.log(callLogString);
-                console.log(ev);
-                console.log(ev.target.childNodes[0].data);
+
+                if (generalCheckedItems.length > 0) {
+                    callLogString += "Discussed the following: ";
+                    for (i = 0; i < generalCheckedItems.length; i++) {
+                        if (i !== checkedItems.length - 1) {
+                            callLogString += generalCheckedItems[i].firstChild.data + ", ";
+                        } else {
+                            callLogString += generalCheckedItems[i].firstChild.data + " ";
+                        }
+                        // document.getElementById("callLog").innerHTML = callLogString;
+                    }
+                }
+                document.getElementById("callLog").innerHTML = callLogString;
+            }
+        }, false);
+
+        var generalList = document.querySelector('#myUL');
+        generalList.addEventListener('click', function (ev) {
+            if (ev.target.tagName === 'LI') {
+                ev.target.classList.toggle('checked');
+
+
+                var callLogString = "V2V\n"
+                // update call log box based on checked items
+                var planCheckedItems = document.getElementById("planUL").getElementsByClassName("checked");
+                var generalCheckedItems = document.getElementById("myUL").getElementsByClassName("checked");
+                var checkedItems = document.getElementsByClassName("checked");
+                var i;
+
+                if (planCheckedItems.length > 0) {
+                    callLogString += "Identified plan: "
+                    for (i = 0; i < planCheckedItems.length; i++) {
+                        if (i !== planCheckedItems.length - 1) {
+                            callLogString += planCheckedItems[i].firstChild.data + ", ";
+                        } else {
+                            callLogString += planCheckedItems[i].firstChild.data + "\n";
+                        }
+                    }
+                }
+
+                if (generalCheckedItems.length > 0) {
+                    callLogString += "Discussed the following: ";
+                    for (i = 0; i < generalCheckedItems.length; i++) {
+                        if (i !== generalCheckedItems.length - 1) {
+                            callLogString += generalCheckedItems[i].firstChild.data + ", ";
+                        } else {
+                            callLogString += generalCheckedItems[i].firstChild.data + " ";
+                        }
+                        // document.getElementById("callLog").innerHTML = callLogString;
+                    }
+                }
+                document.getElementById("callLog").innerHTML = callLogString;
             }
         }, false);
 
