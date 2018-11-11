@@ -180,22 +180,52 @@ textarea {
             </div>
 
             <ul id="myUL">
-                <li>Motivation</li>
+                <!-- <li>Motivation</li>
                 <li>Confirm Program</li>
-                <li>Employment</li>
-                <li>Educational Background</li>
-                <li>Admissions Requirements</li>
                 <li>OTR</li>
                 <li>Financial Plan</li>
                 <li>Tuition Cost</li>
                 <li>Online Format</li>
                 <li>EC Role</li>
                 <li>Expectations</li>
-                <li>Referral</li>
+                <li>Referral</li> -->
             </ul>
         </div>
     </div>
     <script>
+
+        // Gets array from local storage if it already exists, makes it if not
+        function getOrStoreArray() {
+            var listItems = localStorage.getItem("listItems");
+            if (listItems === null) {
+                initItems = [
+                "Motivation",
+                "Confirm Program",
+                "OTR",
+                "Financial Plan",
+                "Tuition Cost",
+                "Modality",
+                "EC Role",
+                "Expecations",
+                "Referral"
+                ]
+                localStorage.setItem("listItems", JSON.stringify(initItems));
+                return [];
+            } else {
+                listItemsArray = JSON.parse(listItems); 
+                return listItemsArray;
+            }
+        }
+        
+        // Add list items from local storage
+        var listItemsData = getOrStoreArray();
+        var h;
+        for (h = 0; h < listItemsData.length; h++) {
+            div = document.createElement("LI");
+            text = document.createTextNode(listItemsData[h]);
+            div.appendChild(text);
+            document.getElementById("myUL").appendChild(div);
+        }
 
         // adds close button to each list item
         var myNodeList = document.getElementsByTagName("LI");
@@ -214,7 +244,16 @@ textarea {
         for (i = 0; i < close.length; i++) {
             close[i].onclick = function () {
                 var div = this.parentElement;
-                div.style.display = "none";
+                var text = div.textContent.substring(0, div.textContent.length -1);
+
+                // removes from storage:
+                var itemsArray = JSON.parse(localStorage.getItem("listItems"));
+                itemsArray.splice(itemsArray.indexOf(text), 1);
+                localStorage.setItem("listItems", JSON.stringify(itemsArray));
+
+                // removes from page:
+                div.parentElement.removeChild(div);
+                
             }
         }
 
@@ -251,6 +290,12 @@ textarea {
             if (inputValue === '') {
                 alert("Blank");
             } else {
+                // adds to storage:
+                var currentItems = JSON.parse(localStorage.getItem("listItems"))
+                currentItems.push(inputValue);
+                localStorage.setItem("listItems", JSON.stringify(currentItems));
+
+                // and then adds new element to page
                 document.getElementById("myUL").appendChild(li);
             }
             document.getElementById("myInput").value = "";
