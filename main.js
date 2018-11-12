@@ -79,6 +79,17 @@ for (i = 0; i < Object.keys(data).length; i++) {
 
     list.id = dataKeys[i] + "UL";
 
+    var logInput = document.createElement("input");
+    var logInputBtn = document.createElement("span");
+    logInput.id = dataKeys[i] + "Input";
+    logInput.className = "logInput";
+    logInputBtn.textContent = "Save";
+    logInputBtn.className = "addBtn";
+    logInputBtn.style = "width: 20%;";
+    
+    list.appendChild(logInput);
+    list.appendChild(logInputBtn);
+
     // Add items to each section
     var h;
     for (h = 0; h < sectionItems.length; h++) {

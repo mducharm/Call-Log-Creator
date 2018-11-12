@@ -184,3 +184,18 @@ textarea {
     border: 1px solid rgba(85, 85, 85, 0.342);
     font-size: 18px;
 }
+
+.logInput {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    width: 80%;
+    padding: 10px;
+    float: left;
+    font-size: 16px;
+}
+
+
+span .addBtn {
+    
+}
