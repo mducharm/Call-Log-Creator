@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="mainDiv" class="card">
+            <div class="header">
+                <img class="TLH-logo" src="https://i.vimeocdn.com/portrait/16028080_300x300.webp" alt="TLH Logo">
+                <h2>Call Log Creator</h2>
+                <p>Check off the boxes while you're on the phone to create a detailed call log.</p>
+                <select name="sectionDropdown" id="sectionDropdown">
+                </select>
+                <input type="text" id="myInput" placeholder="Add New..">
+                <span onclick="newElement()" class="addBtn">Add</span>
+                <textarea name="callLog" cols="40" rows="5" id="callLog"></textarea>
+                <span onclick="copyText()" class="copyTextBtn">Copy to Clipboard</span>
+            </div>
+
+            <div class="list-container" id="list-container">
+                <div class="list-header">Identify Financial Plan</div>
+                <ul id="planUL">
+                    <li>FA</li>
+                    <li>OOP</li>
+                    <li>Payment Plan</li>
+                    <li>Military Benefits</li>
+                    <li>Private Loans</li>
+                    <li>Scholarships</li>
+                    <li>Tuition Reimbursement</li>
+                    <li>Tuition Assistance</li>
+                    <li>Third-Party</li>
+                </ul>
+                <div class="list-header">General</div>
+                <ul id="myUL">
+                    <li>FAFSA</li>
+                    <li>Types of Loans</li>
+                    <li>Responsible Borrowing</li>
+                    <li>Tuition Cost</li>
+                    <li>Reviewed Scholarship</li>
+                    <li>Disbursement & Refunds</li>
+                    <li>SAP Policy</li>
+                    <li>Tuition Due Date</li>
+                    <li>TuP Role</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+
+</html>
