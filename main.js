@@ -12,9 +12,16 @@ function getOrStoreObject() {
 
     // if it doesn't exist, create inital sections:
     if (getData === null) {
-        var initSection = new Section("Identify Plan", "Identified Plan: ");
-        var initSection2 = new Section("General", "Discussed the following: ");
+        var initSection = new Section("Call Status", "");
+        var initSection2 = new Section("Identify Plan", "Identified Plan: ");
+        var initSection3 = new Section("General", "Discussed the following: ");
         initSection.items = [
+            "V2V",
+            "LVM",
+            "PUHU",
+            "NIS"
+        ];
+        initSection2.items = [
             "FA",
             "OOP",
             "Payment Plan",
@@ -25,7 +32,7 @@ function getOrStoreObject() {
             "Tuition Assistance",
             "Third - Party"
         ];
-        initSection2.items = [
+        initSection3.items = [
             "FAFSA",
             "Types of Loans",
             "Responsible Borrowing",
@@ -38,7 +45,8 @@ function getOrStoreObject() {
         ];
         var data = {
             "section0": initSection,
-            "section1": initSection2
+            "section1": initSection2,
+            "section2": initSection3,
         }
         localStorage.setItem("data", JSON.stringify(data));
         return data;
@@ -86,7 +94,7 @@ for (i = 0; i < Object.keys(data).length; i++) {
     logInputBtn.textContent = "Save";
     logInputBtn.className = "addBtn";
     logInputBtn.style = "width: 20%;";
-    
+
     list.appendChild(logInput);
     list.appendChild(logInputBtn);
 
@@ -151,87 +159,54 @@ for (i = 0; i < Object.keys(data).length; i++) {
 //     }
 // }
 
+// Iterates through each list, adding event listeners
+var i;
+for (i = 0; i < Object.keys(data).length; i++) {
+    var dataKeys = Object.keys(data);
+    var queryList = document.querySelector("#" + dataKeys[i]);
+    queryList.addEventListener('click', function (ev) {
+        if (ev.target.tagName === 'LI') {
+            // change CSS if toggled
+            ev.target.classList.toggle('checked');
+
+            var callLogString = "";
+
+            // Iterate through each list and generate log based on checked items
+            var h;
+            for (h = 0; h < Object.keys(data).length; h++) {
+                var listID = dataKeys[h] + "UL";
+                var inputID = dataKeys[h] + "Input";
+
+                // get all checked items within list:
+                var checkedItems = document.getElementById(listID).getElementsByClassName("checked");
 
 
+                if (checkedItems.length > 0) {
 
-// var list = document.querySelector('ul');
-var planList = document.querySelector('#planUL');
-planList.addEventListener('click', function (ev) {
-    if (ev.target.tagName === 'LI') {
-        ev.target.classList.toggle('checked');
-
-
-        var callLogString = "V2V\n"
-        // update call log box based on checked items
-        var planCheckedItems = document.getElementById("planUL").getElementsByClassName("checked");
-        var generalCheckedItems = document.getElementById("myUL").getElementsByClassName("checked");
-        var checkedItems = document.getElementsByClassName("checked");
-        var i;
-
-        if (planCheckedItems.length > 0) {
-            callLogString += "Identified plan: "
-            for (i = 0; i < planCheckedItems.length; i++) {
-                if (i !== planCheckedItems.length - 1) {
-                    callLogString += planCheckedItems[i].firstChild.data + ", ";
-                } else {
-                    callLogString += planCheckedItems[i].firstChild.data + "\n";
+                    // Start callLogString with section's text input, only add space if not blank
+                    if (document.getElementById(inputID).value !== ""){
+                        callLogString += document.getElementById(inputID).value + " ";
+                    }
+                    
+                    // Add checked items to callLogString
+                    var x;
+                    for (x = 0; x < checkedItems.length; x++) {
+                        if (x !== checkedItems.length - 1) {
+                            callLogString += checkedItems[x].firstChild.data + ", ";
+                        } else {
+                            callLogString += checkedItems[x].firstChild.data + "\n";
+                        }
+                    }
                 }
             }
+
+            document.getElementById("callLog").innerHTML = callLogString;
+
         }
-
-        if (generalCheckedItems.length > 0) {
-            callLogString += "Discussed the following: ";
-            for (i = 0; i < generalCheckedItems.length; i++) {
-                if (i !== checkedItems.length - 1) {
-                    callLogString += generalCheckedItems[i].firstChild.data + ", ";
-                } else {
-                    callLogString += generalCheckedItems[i].firstChild.data + " ";
-                }
-                // document.getElementById("callLog").innerHTML = callLogString;
-            }
-        }
-        document.getElementById("callLog").innerHTML = callLogString;
-    }
-}, false);
-
-var generalList = document.querySelector('#myUL');
-generalList.addEventListener('click', function (ev) {
-    if (ev.target.tagName === 'LI') {
-        ev.target.classList.toggle('checked');
+    }, false);
+}
 
 
-        var callLogString = "V2V\n"
-        // update call log box based on checked items
-        var planCheckedItems = document.getElementById("planUL").getElementsByClassName("checked");
-        var generalCheckedItems = document.getElementById("myUL").getElementsByClassName("checked");
-        var checkedItems = document.getElementsByClassName("checked");
-        var i;
-
-        if (planCheckedItems.length > 0) {
-            callLogString += "Identified plan: "
-            for (i = 0; i < planCheckedItems.length; i++) {
-                if (i !== planCheckedItems.length - 1) {
-                    callLogString += planCheckedItems[i].firstChild.data + ", ";
-                } else {
-                    callLogString += planCheckedItems[i].firstChild.data + "\n";
-                }
-            }
-        }
-
-        if (generalCheckedItems.length > 0) {
-            callLogString += "Discussed the following: ";
-            for (i = 0; i < generalCheckedItems.length; i++) {
-                if (i !== generalCheckedItems.length - 1) {
-                    callLogString += generalCheckedItems[i].firstChild.data + ", ";
-                } else {
-                    callLogString += generalCheckedItems[i].firstChild.data + " ";
-                }
-                // document.getElementById("callLog").innerHTML = callLogString;
-            }
-        }
-        document.getElementById("callLog").innerHTML = callLogString;
-    }
-}, false);
 
 // Create new list item when clicking add
 
@@ -271,6 +246,19 @@ function newElement() {
     //         div.style.display = "none";
     //     }
     // }
+}
+console.log(getOrStoreObject());
+function newSection() {
+    var inputValue = document.getElementById("myInput2").value;
+    if (inputValue === '') {
+        alert("Section Input Blank");
+    } else {
+        var sectionObject = new Section(inputValue, "");
+        data["section"+Object.keys(data).length] = sectionObject;
+        localStorage.setItem("data", JSON.stringify(data));
+
+        
+    }
 }
 
 function copyText() {
