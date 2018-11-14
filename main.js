@@ -87,13 +87,22 @@ for (i = 0; i < Object.keys(data).length; i++) {
 
     list.id = dataKeys[i] + "UL";
 
+
+    // Create the log input for each section
     var logInput = document.createElement("input");
     var logInputBtn = document.createElement("span");
     logInput.id = dataKeys[i] + "Input";
     logInput.className = "logInput";
-    logInputBtn.textContent = "Save";
-    logInputBtn.className = "addBtn";
-    logInputBtn.style = "width: 20%;";
+    logInput.value = data[dataKeys[i]].string;
+    // this saves input any time the user types anything in the text box
+    logInput.onkeyup = function () {
+        var sectionName = this.parentElement.parentElement.id;
+        data[sectionName].string = this.value;
+        localStorage.setItem("data", JSON.stringify(data));
+    };
+    // logInputBtn.textContent = "Save";
+    // logInputBtn.className = "addBtn";
+    // logInputBtn.style = "width: 20%;";
 
     list.appendChild(logInput);
     list.appendChild(logInputBtn);
@@ -107,10 +116,17 @@ for (i = 0; i < Object.keys(data).length; i++) {
         var x = document.createTextNode("\u00D7");
         span.className = "close";
         span.onclick = function () {
-            var div = this.parentElement;
-            // var text = div.textContent.substring(0, div.textContent.length - 1);
+            // Removes item from local storage
 
-            // div.style.display = "none";
+            var div = this.parentElement;
+            var sectionID = this.parentElement.parentElement.parentElement.id;
+            var text = div.textContent.substring(0, div.textContent.length - 1);
+
+            // Get index of text in data and remove from section.items
+            var index = data[sectionID].items.indexOf(text);
+            data[sectionID].items.splice(index, 1);
+            // sets section.items to a new array with the value filtered out
+            localStorage.setItem("data", JSON.stringify(data));
 
             // removes from page:
             div.parentElement.removeChild(div);
@@ -184,10 +200,10 @@ for (i = 0; i < Object.keys(data).length; i++) {
                 if (checkedItems.length > 0) {
 
                     // Start callLogString with section's text input, only add space if not blank
-                    if (document.getElementById(inputID).value !== ""){
+                    if (document.getElementById(inputID).value !== "") {
                         callLogString += document.getElementById(inputID).value + " ";
                     }
-                    
+
                     // Add checked items to callLogString
                     var x;
                     for (x = 0; x < checkedItems.length; x++) {
@@ -211,34 +227,43 @@ for (i = 0; i < Object.keys(data).length; i++) {
 // Create new list item when clicking add
 
 function newElement() {
-    // Creates li element and adds to section
-    var li = document.createElement("li");
-    var dropdownValue = document.getElementById("sectionDropdown").value;
+    // Check if blank
     var inputValue = document.getElementById("myInput").value;
-    var t = document.createTextNode(inputValue);
-    li.appendChild(t);
     if (inputValue === '') {
-        alert("Blank");
+        alert("Item Input Blank");
     } else {
+        var dropdownValue = document.getElementById("sectionDropdown").value;
+
+        // Saves item into local storage
+        data[dropdownValue].items.push(inputValue);
+        localStorage.setItem("data", JSON.stringify(data));
+
+        // Create li element, add input text to it, append it to section element
+        var li = document.createElement("li");
+
+        var t = document.createTextNode(inputValue);
+        li.appendChild(t);
+
         document.getElementById(dropdownValue + "UL").appendChild(li);
+
+        document.getElementById("myInput").value = ""; // reset input to blank
+        var span = document.createElement("SPAN");
+        var txt = document.createTextNode("\u00D7");
+        span.className = "close";
+        span.appendChild(txt);
+
+        // on click, remove from page
+        span.onclick = function () {
+            var div = this.parentElement;
+            div.parentElement.removeChild(div);
+
+        }
+
+        li.appendChild(span);
     }
-    document.getElementById("myInput").value = "";
 
-    var span = document.createElement("SPAN");
-    var txt = document.createTextNode("\u00D7");
-    span.className = "close";
-    span.appendChild(txt);
-    span.onclick = function () {
-        var div = this.parentElement;
-        // var text = div.textContent.substring(0, div.textContent.length - 1);
 
-        // div.style.display = "none";
 
-        // removes from page:
-        div.parentElement.removeChild(div);
-    }
-
-    li.appendChild(span);
 
     // for (i = 0; i < close.length; i++) {
     //     close[i].onclick = function () {
@@ -247,19 +272,34 @@ function newElement() {
     //     }
     // }
 }
-console.log(getOrStoreObject());
+
 function newSection() {
     var inputValue = document.getElementById("myInput2").value;
     if (inputValue === '') {
         alert("Section Input Blank");
     } else {
         var sectionObject = new Section(inputValue, "");
-        data["section"+Object.keys(data).length] = sectionObject;
+        data["section" + Object.keys(data).length] = sectionObject;
         localStorage.setItem("data", JSON.stringify(data));
 
-        
+
     }
 }
+
+// Allows you to hit enter to add items
+var addItemInput = document.getElementById("myInput");
+addItemInput.addEventListener('keypress', function (event) {
+    if (event.keyCode == 13) {
+        newElement();
+    }
+});
+
+var addSectionInput = document.getElementById("myInput2");
+addSectionInput.addEventListener('keypress', function (event) {
+    if (event.keyCode == 13) {
+        newSection();
+    }
+});
 
 function copyText() {
     var copyText = document.getElementById("callLog");
