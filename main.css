@@ -85,6 +85,21 @@ ul li.checked::before {
     color: white;
 }
 
+.sectionClose {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 12px 16px 12px 16px;
+    height: 5vh;
+    font-size: 18px;
+    transition: 0.2s;
+}
+
+.sectionClose:hover {
+    background-color: #fff;
+    color: white;
+}
+
 .header {
     background: rgb(236, 236, 236);
     padding: 30px 40px;
@@ -142,6 +157,21 @@ select {
 
 .addBtn:hover {
     background-color: #bbb;
+}
+
+.delBtn {
+    padding: 10px;
+    
+    width: 100%;
+    background: #d9d9d9;
+    color: #555;
+    float: left;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 0;
+    white-space: nowrap;
 }
 
 textarea {

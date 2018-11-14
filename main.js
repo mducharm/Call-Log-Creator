@@ -1,5 +1,5 @@
 
-
+localStorage.clear();
 // Constructor for Section object
 function Section(name, string) {
     this.name = name; // header
@@ -74,16 +74,22 @@ for (i = 0; i < Object.keys(data).length; i++) {
 
     container.id = dataKeys[i];
 
+    // Creates section header
     header.classList.add("list-header");
     var headerText = document.createTextNode(data[dataKeys[i]].name);
     header.appendChild(headerText);
 
+    // Add section options to dropdown menus
     var dropdown = document.getElementById("sectionDropdown");
+    var delDropdown = document.getElementById("delSectionDropdown");
     var option = document.createElement("option");
     var optionText = document.createTextNode(data[dataKeys[i]].name);
     option.value = dataKeys[i];
     option.appendChild(optionText);
-    dropdown.appendChild(option);
+    var delOption = option.cloneNode(true);
+
+    dropdown.appendChild(option); // adds to addItem dropdown
+    delDropdown.appendChild(delOption); // adds to delete dropdown
 
     list.id = dataKeys[i] + "UL";
 
@@ -116,7 +122,7 @@ for (i = 0; i < Object.keys(data).length; i++) {
         var x = document.createTextNode("\u00D7");
         span.className = "close";
         span.onclick = function () {
-            // Removes item from local storage
+            // Removes item from local storage and html
 
             var div = this.parentElement;
             var sectionID = this.parentElement.parentElement.parentElement.id;
@@ -147,33 +153,6 @@ for (i = 0; i < Object.keys(data).length; i++) {
     // Add section container to main container
     document.getElementById("list-container").appendChild(container);
 }
-
-
-// adds close button to each list item
-// var myNodeList = document.getElementsByTagName("LI");
-// var i;
-// for (i = 0; i < myNodeList.length; i++) {
-//     var span = document.createElement("SPAN");
-//     var txt = document.createTextNode("\u00D7");
-//     span.className = "close";
-//     span.appendChild(txt);
-//     myNodeList[i].appendChild(span);
-// }
-
-// click on close button to delete element
-// var close = document.getElementsByClassName("close");
-// var i;
-// for (i = 0; i < close.length; i++) {
-//     close[i].onclick = function () {
-//         var div = this.parentElement;
-//         var text = div.textContent.substring(0, div.textContent.length - 1);
-
-//         // div.style.display = "none";
-
-//         // removes from page:
-//         div.parentElement.removeChild(div);
-//     }
-// }
 
 // Iterates through each list, adding event listeners
 var i;
@@ -254,9 +233,19 @@ function newElement() {
 
         // on click, remove from page
         span.onclick = function () {
+            // Removes item from local storage and html
             var div = this.parentElement;
-            div.parentElement.removeChild(div);
+            var sectionID = this.parentElement.parentElement.parentElement.id;
+            var text = div.textContent.substring(0, div.textContent.length - 1);
 
+            // Get index of text in data and remove from section.items
+            var index = data[sectionID].items.indexOf(text);
+            data[sectionID].items.splice(index, 1);
+            // sets section.items to a new array with the value filtered out
+            localStorage.setItem("data", JSON.stringify(data));
+
+            // removes from page:
+            div.parentElement.removeChild(div);
         }
 
         li.appendChild(span);
@@ -273,16 +262,95 @@ function newElement() {
     // }
 }
 
+// Creates new section, adds it to DOM and saves to localStorage
 function newSection() {
     var inputValue = document.getElementById("myInput2").value;
-    if (inputValue === '') {
+
+    // Create array of section names to check for already existing sections
+    var sectionNames = [];
+    for (i = 0; i < Object.keys(data).length; i++) {
+        sectionNames.push(data["section" + i].name);
+    }
+
+    if (inputValue === '') { // if blank
         alert("Section Input Blank");
-    } else {
+    } else if (sectionNames.includes(inputValue)) { // if in use
+        alert("Section name already in use");
+    } else { // runs code to create new section
         var sectionObject = new Section(inputValue, "");
-        data["section" + Object.keys(data).length] = sectionObject;
-        localStorage.setItem("data", JSON.stringify(data));
+        var sectionKey = "section" + Object.keys(data).length;
+        data[sectionKey] = sectionObject;
+        // localStorage.setItem("data", JSON.stringify(data));
+
+        // Adds section option to dropdown
+        var dropdown = document.getElementById("sectionDropdown");
+        var option = document.createElement("option");
+        var optionText = document.createTextNode(sectionObject.name);
+        option.value = sectionKey;
+        option.appendChild(optionText);
+        dropdown.appendChild(option);
+
+        // Add section options to dropdown menus
+        option.appendChild(optionText);
+        var delOption = option.cloneNode(true);
+
+        // dropdown.appendChild(option); // adds to addItem dropdown
+        delDropdown.appendChild(delOption); // adds to delete dropdown
+
+        // Add to DOM
+        var container = document.createElement("DIV");
+        var header = document.createElement("DIV");
+        var list = document.createElement("UL");
+
+        container.id = sectionKey;
+
+        // Creates section header
+        header.classList.add("list-header");
+        var headerText = document.createTextNode(data[sectionKey].name);
+        header.appendChild(headerText);
 
 
+
+        list.id = sectionKey + "UL";
+
+
+        // Create the log input for each section
+        var logInput = document.createElement("input");
+        // var logInputBtn = document.createElement("span");
+        logInput.id = sectionKey + "Input";
+        logInput.className = "logInput";
+        logInput.value = data[sectionKey].string;
+        // this saves input any time the user types anything in the text box
+        logInput.onkeyup = function () {
+            var sectionName = this.parentElement.parentElement.id;
+            data[sectionName].string = this.value;
+            localStorage.setItem("data", JSON.stringify(data));
+        };
+        // logInputBtn.textContent = "Save";
+        // logInputBtn.className = "addBtn";
+        // logInputBtn.style = "width: 20%;";
+
+        list.appendChild(logInput);
+        // list.appendChild(logInputBtn);
+        // Add finished header & list elements to container
+        container.appendChild(header);
+        container.appendChild(list);
+
+        // Add section container to main container
+        document.getElementById("list-container").appendChild(container);
+
+    }
+}
+
+function delSection() {
+    // Prompts to see if you want to delete section
+    var dropdown = document.getElementById("delSectionDropdown");
+    var dropdownVal = dropdown.options[dropdown.selectedIndex].text;
+    if (confirm("Are you sure you wish to delete " + dropdownVal + "?")) {
+        // deletes
+        console.log(dropdown.value);
+    } else {
+        // does not delete
     }
 }
 
@@ -294,6 +362,7 @@ addItemInput.addEventListener('keypress', function (event) {
     }
 });
 
+// Allows you to hit enter to add sections
 var addSectionInput = document.getElementById("myInput2");
 addSectionInput.addEventListener('keypress', function (event) {
     if (event.keyCode == 13) {
