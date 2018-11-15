@@ -128,7 +128,7 @@ function getOrStoreObject2() {
 function choosePreset() {
     var dropdown = document.getElementById("presetDropdown");
     var dropdownVal = dropdown.options[dropdown.selectedIndex].text;
-    console.log(dropdownVal);
+    
     if (dropdownVal == "Tuition Planner") {
         localStorage.setItem("chosenPreset", "data");
         location.reload();
@@ -139,7 +139,7 @@ function choosePreset() {
 }
 
 var chosenPreset = localStorage.getItem("chosenPreset");
-console.log(chosenPreset);
+
 if (chosenPreset == null){
     // defaults to TuP one
     var data = getOrStoreObject();
@@ -165,7 +165,7 @@ if (chosenPreset == null){
         }
     }
 }
-console.log(chosenPreset);
+
 // Iterate through all Section objects within data
 // Generates elements and adds to DOM
 var i;
@@ -361,7 +361,8 @@ function newElement() {
             if (ev.target.tagName === 'LI') {
                 // change CSS if toggled
                 ev.target.classList.toggle('checked');
-                
+                li.classList.toggle('checked');
+
                 var callLogString = "";
                 var dataKeys = Object.keys(data);
                 // Iterate through each list and generate log based on checked items
