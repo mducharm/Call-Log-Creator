@@ -140,8 +140,10 @@ select {
     padding: 10px;
     
     width: 100%;
-    background: #d9d9d9;
-    color: #555;
+    /* background: #d9d9d9;
+    color: #555; */
+    background: rgba(0, 116, 0, 0.75);
+    color: rgb(255, 254, 254);
     float: left;
     text-align: center;
     font-size: 16px;
@@ -152,11 +154,13 @@ select {
 }
 
 #addSectionBtn, #addItemBtn {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .addBtn:hover {
-    background-color: #bbb;
+    /* background-color: #bbb; */
+    background: rgba(48, 187, 48, 0.75);
+    color: rgb(0, 0, 0);
 }
 
 .delBtn {
@@ -172,6 +176,8 @@ select {
     transition: 0.3s;
     border-radius: 0;
     white-space: nowrap;
+    background: rgba(150, 0, 0, 0.75);
+    color: white;
 }
 
 textarea {
@@ -228,4 +234,10 @@ textarea {
     padding: 10px;
     float: left;
     font-size: 16px;
+}
+
+#resetBtn {
+    margin-top: 30px;
+    background: rgba(150, 0, 0, 0.75);
+    color: white;
 }

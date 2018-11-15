@@ -1,5 +1,5 @@
 
-localStorage.clear();
+// localStorage.clear();
 // Constructor for Section object
 function Section(name, string) {
     this.name = name; // header
@@ -12,16 +12,17 @@ function getOrStoreObject() {
 
     // if it doesn't exist, create inital sections:
     if (getData === null) {
-        var initSection = new Section("Call Status", "");
-        var initSection2 = new Section("Identify Plan", "Identified Plan: ");
-        var initSection3 = new Section("General", "Discussed the following: ");
-        initSection.items = [
+        var initSection0 = new Section("Call Status", "");
+        var initSection1 = new Section("Identify Plan", "Identified Plan: ");
+        var initSection2 = new Section("General", "Discussed the following: ");
+        var initSection3 = new Section("Emails", "Emails Needed: ");
+        initSection0.items = [
             "V2V",
             "LVM",
             "PUHU",
             "NIS"
         ];
-        initSection2.items = [
+        initSection1.items = [
             "FA",
             "OOP",
             "Payment Plan",
@@ -32,7 +33,7 @@ function getOrStoreObject() {
             "Tuition Assistance",
             "Third - Party"
         ];
-        initSection3.items = [
+        initSection2.items = [
             "FAFSA",
             "Types of Loans",
             "Responsible Borrowing",
@@ -43,10 +44,17 @@ function getOrStoreObject() {
             "Tuition Due Date",
             "TuP Role"
         ];
+        initSection3.items = [
+            "Intro",
+            "Payment Options",
+            "School Resources & Policies",
+            "FA Award Information",
+        ];
         var data = {
-            "section0": initSection,
-            "section1": initSection2,
-            "section2": initSection3,
+            "section0": initSection0,
+            "section1": initSection1,
+            "section2": initSection2,
+            "section3": initSection3,
         }
         localStorage.setItem("data", JSON.stringify(data));
         return data;
@@ -154,6 +162,7 @@ for (i = 0; i < Object.keys(data).length; i++) {
     document.getElementById("list-container").appendChild(container);
 }
 
+
 // Iterates through each list, adding event listeners
 var i;
 for (i = 0; i < Object.keys(data).length; i++) {
@@ -169,12 +178,12 @@ for (i = 0; i < Object.keys(data).length; i++) {
             // Iterate through each list and generate log based on checked items
             var h;
             for (h = 0; h < Object.keys(data).length; h++) {
-                var listID = dataKeys[h] + "UL";
-                var inputID = dataKeys[h] + "Input";
+                var listID = Object.keys(data)[h] + "UL";
+                var inputID = Object.keys(data)[h] + "Input";
+     
 
                 // get all checked items within list:
                 var checkedItems = document.getElementById(listID).getElementsByClassName("checked");
-
 
                 if (checkedItems.length > 0) {
 
@@ -223,7 +232,7 @@ function newElement() {
         var t = document.createTextNode(inputValue);
         li.appendChild(t);
 
-        document.getElementById(dropdownValue + "UL").appendChild(li);
+        
 
         document.getElementById("myInput").value = ""; // reset input to blank
         var span = document.createElement("SPAN");
@@ -248,7 +257,50 @@ function newElement() {
             div.parentElement.removeChild(div);
         }
 
+        // Adds event listener to new item
+        li.addEventListener('click', function (ev) {
+            if (ev.target.tagName === 'LI') {
+                // change CSS if toggled
+                ev.target.classList.toggle('checked');
+                
+                var callLogString = "";
+                var dataKeys = Object.keys(data);
+                // Iterate through each list and generate log based on checked items
+                var h;
+                for (h = 0; h < Object.keys(data).length; h++) {
+                    var listID = dataKeys[h] + "UL";
+                    var inputID = dataKeys[h] + "Input";
+    
+                    // get all checked items within list:
+                    var checkedItems = document.getElementById(listID).getElementsByClassName("checked");
+    
+    
+                    if (checkedItems.length > 0) {
+    
+                        // Start callLogString with section's text input, only add space if not blank
+                        if (document.getElementById(inputID).value !== "") {
+                            callLogString += document.getElementById(inputID).value + " ";
+                        }
+    
+                        // Add checked items to callLogString
+                        var x;
+                        for (x = 0; x < checkedItems.length; x++) {
+                            if (x !== checkedItems.length - 1) {
+                                callLogString += checkedItems[x].firstChild.data + ", ";
+                            } else {
+                                callLogString += checkedItems[x].firstChild.data + "\n";
+                            }
+                        }
+                    }
+                }
+    
+                document.getElementById("callLog").innerHTML = callLogString;
+    
+            }
+        }, false);
+
         li.appendChild(span);
+        document.getElementById(dropdownValue + "UL").appendChild(li);
     }
 
 
@@ -280,7 +332,7 @@ function newSection() {
         var sectionObject = new Section(inputValue, "");
         var sectionKey = "section" + Object.keys(data).length;
         data[sectionKey] = sectionObject;
-        // localStorage.setItem("data", JSON.stringify(data));
+        localStorage.setItem("data", JSON.stringify(data));
 
         // Adds section option to dropdown
         var dropdown = document.getElementById("sectionDropdown");
@@ -316,7 +368,6 @@ function newSection() {
 
         // Create the log input for each section
         var logInput = document.createElement("input");
-        // var logInputBtn = document.createElement("span");
         logInput.id = sectionKey + "Input";
         logInput.className = "logInput";
         logInput.value = data[sectionKey].string;
@@ -326,12 +377,8 @@ function newSection() {
             data[sectionName].string = this.value;
             localStorage.setItem("data", JSON.stringify(data));
         };
-        // logInputBtn.textContent = "Save";
-        // logInputBtn.className = "addBtn";
-        // logInputBtn.style = "width: 20%;";
-
         list.appendChild(logInput);
-        // list.appendChild(logInputBtn);
+
         // Add finished header & list elements to container
         container.appendChild(header);
         container.appendChild(list);
@@ -346,12 +393,41 @@ function delSection() {
     // Prompts to see if you want to delete section
     var dropdown = document.getElementById("delSectionDropdown");
     var dropdownVal = dropdown.options[dropdown.selectedIndex].text;
-    if (confirm("Are you sure you wish to delete " + dropdownVal + "?")) {
-        // deletes
-        console.log(dropdown.value);
+
+    if (confirm("Are you sure you wish to delete " + dropdownVal + "?")) { // deletes section
+
+        // Removes item from local storage and html
+        var sectionElement = document.getElementById(dropdown.value);
+        delete data[dropdown.value]; // deletes section key  
+        localStorage.setItem("data", JSON.stringify(data));
+
+        console.log(data);
+        // Removes from DOM:
+        sectionElement.parentElement.removeChild(sectionElement);
+
+        // Remove from dropdown menus        
+        var addItemsDropdown = document.getElementById("sectionDropdown");
+
+        var delOption = dropdown.options[dropdown.selectedIndex]
+        var addOption = addItemsDropdown.options[dropdown.selectedIndex];
+
+        delOption.parentElement.removeChild(delOption);
+        addOption.parentElement.removeChild(addOption);
+
+
     } else {
         // does not delete
     }
+}
+
+function resetBtn() {
+    if (confirm("Are you sure you wish to reset back to default settings?")){
+        localStorage.clear();
+        location.reload();
+    } else {
+        // does not reset
+    }
+    
 }
 
 // Allows you to hit enter to add items
