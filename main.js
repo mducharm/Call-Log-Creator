@@ -139,10 +139,12 @@ function choosePreset() {
 }
 
 var chosenPreset = localStorage.getItem("chosenPreset");
-
+console.log(chosenPreset);
 if (chosenPreset == null){
     // defaults to TuP one
     var data = getOrStoreObject();
+    localStorage.setItem("chosenPreset", "data");
+    chosenPreset = localStorage.getItem("chosenPreset"); // sets chosenPreset from null to "data"
 } else if (chosenPreset == "data") {
     var data = getOrStoreObject(); // gets data for TuP
     // change preset option to selected
@@ -163,7 +165,7 @@ if (chosenPreset == null){
         }
     }
 }
-
+console.log(chosenPreset);
 // Iterate through all Section objects within data
 // Generates elements and adds to DOM
 var i;
