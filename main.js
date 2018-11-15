@@ -1,5 +1,5 @@
 
-// localStorage.clear();
+
 // Constructor for Section object
 function Section(name, string) {
     this.name = name; // header
@@ -14,8 +14,9 @@ function getOrStoreObject() {
     if (getData === null) {
         var initSection0 = new Section("Call Status", "");
         var initSection1 = new Section("Identify Plan", "Identified Plan: ");
-        var initSection2 = new Section("General", "Discussed the following: ");
-        var initSection3 = new Section("Emails", "Emails Needed: ");
+        var initSection2 = new Section("General", "Reviewed: ");
+        var initSection3 = new Section("Next Step", "Next Step: ");
+        var initSection4 = new Section("Emails", "Emails Needed: ");
         initSection0.items = [
             "V2V",
             "LVM",
@@ -35,16 +36,25 @@ function getOrStoreObject() {
         ];
         initSection2.items = [
             "FAFSA",
+            "DRT",
             "Types of Loans",
             "Responsible Borrowing",
             "Tuition Cost",
-            "Reviewed Scholarship",
+            "Reviewed Scholarships",
             "Disbursement & Refunds",
             "SAP Policy",
             "Tuition Due Date",
             "TuP Role"
         ];
         initSection3.items = [
+            "FAFSA",
+            "Verification Docs",
+            "Accept Award",
+            "Entrance Counseling",
+            "MPN",
+            
+        ];
+        initSection4.items = [
             "Intro",
             "Payment Options",
             "School Resources & Policies",
@@ -55,6 +65,7 @@ function getOrStoreObject() {
             "section1": initSection1,
             "section2": initSection2,
             "section3": initSection3,
+            "section4": initSection4,
         }
         localStorage.setItem("data", JSON.stringify(data));
         return data;
@@ -65,7 +76,93 @@ function getOrStoreObject() {
     }
 }
 
-var data = getOrStoreObject();
+function getOrStoreObject2() {
+    var getData = localStorage.getItem("data2");
+
+    // if it doesn't exist, create inital sections:
+    if (getData === null) {
+        var initSection0 = new Section("Call Status", "");
+        var initSection1 = new Section("General", "Discussed: ");
+        var initSection2 = new Section("Next Step", "Next Step: ");
+        var initSection3 = new Section("Emails", "Emails Needed: ");
+        initSection0.items = [
+            "V2V",
+            "LVM",
+            "PUHU",
+            "NIS"
+        ];
+        initSection1.items = [
+            "Program Requirements",
+            "EC Role",
+            "Employment Background",
+            "Cost",
+        ];
+        initSection2.items = [
+            "APP",
+            "OTR",
+            "SO Transcript",
+            "LOR",
+            "FAFSA",
+        ];
+        initSection3.items = [
+            "Post-INT",
+            "ACP",
+            "OTR",
+            "Orientation links",
+        ];
+        var data = {
+            "section0": initSection0,
+            "section1": initSection1,
+            "section2": initSection2,
+            "section3": initSection3,
+        }
+        localStorage.setItem("data2", JSON.stringify(data));
+        return data;
+    } else {
+        // parse if it already exists in localStorage
+        data = JSON.parse(getData);
+        return data;
+    }
+}
+
+function choosePreset() {
+    var dropdown = document.getElementById("presetDropdown");
+    var dropdownVal = dropdown.options[dropdown.selectedIndex].text;
+    console.log(dropdownVal);
+    if (dropdownVal == "Tuition Planner") {
+        localStorage.setItem("chosenPreset", "data");
+        location.reload();
+    } else if (dropdownVal == "Enrollment Counselor") {
+        localStorage.setItem("chosenPreset", "data2");
+        location.reload();
+    }
+}
+
+var chosenPreset = localStorage.getItem("chosenPreset");
+
+if (chosenPreset == null){
+    // defaults to TuP one
+    var data = getOrStoreObject();
+} else if (chosenPreset == "data") {
+    var data = getOrStoreObject(); // gets data for TuP
+    // change preset option to selected
+    var dropdown = document.getElementById("presetDropdown");
+    for (i=0; i < dropdown.options.length; i++){
+        if (dropdown.options[i].value == "data") {
+            dropdown.options[i].selected = true;
+        }
+    }
+} else if (chosenPreset == "data2") {
+    // EC preset
+    var data = getOrStoreObject2();
+    // change preset option to selected
+    var dropdown = document.getElementById("presetDropdown");
+    for (var i=0; i < dropdown.options.length; i++){
+        if (dropdown.options[i].value == "data2") {
+            dropdown.options[i].selected = true;
+        }
+    }
+}
 
 // Iterate through all Section objects within data
 // Generates elements and adds to DOM
@@ -112,7 +209,7 @@ for (i = 0; i < Object.keys(data).length; i++) {
     logInput.onkeyup = function () {
         var sectionName = this.parentElement.parentElement.id;
         data[sectionName].string = this.value;
-        localStorage.setItem("data", JSON.stringify(data));
+        localStorage.setItem(chosenPreset, JSON.stringify(data));
     };
     // logInputBtn.textContent = "Save";
     // logInputBtn.className = "addBtn";
@@ -140,7 +237,7 @@ for (i = 0; i < Object.keys(data).length; i++) {
             var index = data[sectionID].items.indexOf(text);
             data[sectionID].items.splice(index, 1);
             // sets section.items to a new array with the value filtered out
-            localStorage.setItem("data", JSON.stringify(data));
+            localStorage.setItem(chosenPreset, JSON.stringify(data));
 
             // removes from page:
             div.parentElement.removeChild(div);
@@ -224,7 +321,7 @@ function newElement() {
 
         // Saves item into local storage
         data[dropdownValue].items.push(inputValue);
-        localStorage.setItem("data", JSON.stringify(data));
+        localStorage.setItem(chosenPreset, JSON.stringify(data));
 
         // Create li element, add input text to it, append it to section element
         var li = document.createElement("li");
@@ -251,7 +348,7 @@ function newElement() {
             var index = data[sectionID].items.indexOf(text);
             data[sectionID].items.splice(index, 1);
             // sets section.items to a new array with the value filtered out
-            localStorage.setItem("data", JSON.stringify(data));
+            localStorage.setItem(chosenPreset, JSON.stringify(data));
 
             // removes from page:
             div.parentElement.removeChild(div);
@@ -332,7 +429,7 @@ function newSection() {
         var sectionObject = new Section(inputValue, "");
         var sectionKey = "section" + Object.keys(data).length;
         data[sectionKey] = sectionObject;
-        localStorage.setItem("data", JSON.stringify(data));
+        localStorage.setItem(chosenPreset, JSON.stringify(data));
 
         // Adds section option to dropdown
         var dropdown = document.getElementById("sectionDropdown");
@@ -375,7 +472,7 @@ function newSection() {
         logInput.onkeyup = function () {
             var sectionName = this.parentElement.parentElement.id;
             data[sectionName].string = this.value;
-            localStorage.setItem("data", JSON.stringify(data));
+            localStorage.setItem(chosenPreset, JSON.stringify(data));
         };
         list.appendChild(logInput);
 
@@ -399,7 +496,7 @@ function delSection() {
         // Removes item from local storage and html
         var sectionElement = document.getElementById(dropdown.value);
         delete data[dropdown.value]; // deletes section key  
-        localStorage.setItem("data", JSON.stringify(data));
+        localStorage.setItem(chosenPreset, JSON.stringify(data));
 
         console.log(data);
         // Removes from DOM:

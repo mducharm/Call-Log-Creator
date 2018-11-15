@@ -159,7 +159,7 @@ select {
 
 .addBtn:hover {
     /* background-color: #bbb; */
-    background: rgba(48, 187, 48, 0.75);
+    background: rgba(48, 187, 48, 0.6);
     color: rgb(0, 0, 0);
 }
 
@@ -178,6 +178,11 @@ select {
     white-space: nowrap;
     background: rgba(150, 0, 0, 0.75);
     color: white;
+}
+
+.delBtn:hover {
+    background: rgba(236, 91, 91, 0.6);
+    color: black;
 }
 
 textarea {
@@ -240,4 +245,21 @@ textarea {
     margin-top: 30px;
     background: rgba(150, 0, 0, 0.75);
     color: white;
+}
+
+#resetBtn:hover {
+    background: rgba(236, 91, 91, 0.6);
+    color: black;
+}
+
+#presetBtn {
+    margin-bottom: 50px;
+    background: rgba(28, 94, 238, 0.75);
+    color: white;
+}
+
+#presetBtn:hover {
+    margin-bottom: 50px;
+    background: rgba(96, 145, 252, 0.6);
+    color: black;
 }
