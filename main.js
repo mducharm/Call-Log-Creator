@@ -52,7 +52,7 @@ function getOrStoreObject() {
             "Accept Award",
             "Entrance Counseling",
             "MPN",
-            
+
         ];
         initSection4.items = [
             "Intro",
@@ -128,7 +128,7 @@ function getOrStoreObject2() {
 function choosePreset() {
     var dropdown = document.getElementById("presetDropdown");
     var dropdownVal = dropdown.options[dropdown.selectedIndex].text;
-    
+
     if (dropdownVal == "Tuition Planner") {
         localStorage.setItem("chosenPreset", "data");
         location.reload();
@@ -140,7 +140,7 @@ function choosePreset() {
 
 var chosenPreset = localStorage.getItem("chosenPreset");
 
-if (chosenPreset == null){
+if (chosenPreset == null) {
     // defaults to TuP one
     var data = getOrStoreObject();
     localStorage.setItem("chosenPreset", "data");
@@ -149,7 +149,7 @@ if (chosenPreset == null){
     var data = getOrStoreObject(); // gets data for TuP
     // change preset option to selected
     var dropdown = document.getElementById("presetDropdown");
-    for (i=0; i < dropdown.options.length; i++){
+    for (i = 0; i < dropdown.options.length; i++) {
         if (dropdown.options[i].value == "data") {
             dropdown.options[i].selected = true;
         }
@@ -159,7 +159,7 @@ if (chosenPreset == null){
     var data = getOrStoreObject2();
     // change preset option to selected
     var dropdown = document.getElementById("presetDropdown");
-    for (var i=0; i < dropdown.options.length; i++){
+    for (var i = 0; i < dropdown.options.length; i++) {
         if (dropdown.options[i].value == "data2") {
             dropdown.options[i].selected = true;
         }
@@ -279,7 +279,7 @@ for (i = 0; i < Object.keys(data).length; i++) {
             for (h = 0; h < Object.keys(data).length; h++) {
                 var listID = Object.keys(data)[h] + "UL";
                 var inputID = Object.keys(data)[h] + "Input";
-     
+
 
                 // get all checked items within list:
                 var checkedItems = document.getElementById(listID).getElementsByClassName("checked");
@@ -331,7 +331,7 @@ function newElement() {
         var t = document.createTextNode(inputValue);
         li.appendChild(t);
 
-        
+
 
         document.getElementById("myInput").value = ""; // reset input to blank
         var span = document.createElement("SPAN");
@@ -370,18 +370,18 @@ function newElement() {
                 for (h = 0; h < Object.keys(data).length; h++) {
                     var listID = dataKeys[h] + "UL";
                     var inputID = dataKeys[h] + "Input";
-    
+
                     // get all checked items within list:
                     var checkedItems = document.getElementById(listID).getElementsByClassName("checked");
-    
-    
+
+
                     if (checkedItems.length > 0) {
-    
+
                         // Start callLogString with section's text input, only add space if not blank
                         if (document.getElementById(inputID).value !== "") {
                             callLogString += document.getElementById(inputID).value + " ";
                         }
-    
+
                         // Add checked items to callLogString
                         var x;
                         for (x = 0; x < checkedItems.length; x++) {
@@ -393,9 +393,9 @@ function newElement() {
                         }
                     }
                 }
-    
+
                 document.getElementById("callLog").innerHTML = callLogString;
-    
+
             }
         }, false);
 
@@ -521,13 +521,13 @@ function delSection() {
 }
 
 function resetBtn() {
-    if (confirm("Are you sure you wish to reset back to default settings?")){
+    if (confirm("Are you sure you wish to reset back to default settings?")) {
         localStorage.clear();
         location.reload();
     } else {
         // does not reset
     }
-    
+
 }
 
 // Allows you to hit enter to add items
@@ -550,4 +550,53 @@ function copyText() {
     var copyText = document.getElementById("callLog");
     copyText.select();
     document.execCommand("copy");
+}
+
+function exportJSON() {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({"data": JSON.parse(localStorage.getItem("data")), "data2": JSON.parse(localStorage.getItem("data2"))}));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "CallLogSettings.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+
+// Handle imported JSON
+// var reader = new FileReader();
+// var fileToRead = document.getElementById('file-input').files[0];
+
+// reader.addEventListener("loadend", function() {
+//     console.log(reader.result);
+//     console.log(reader.readAsText(fileToRead));
+// });
+
+
+
+function importJSON() {
+    var reader = new FileReader();
+    var fileToRead = document.getElementById('file-input').files[0];
+
+    reader.addEventListener("loadend", function () {
+        // console.log(reader.result);
+        try {
+            var parsedStr = JSON.parse(reader.result);
+            localStorage.setItem("data", JSON.stringify(parsedStr["data"]));
+            localStorage.setItem("data2", JSON.stringify(parsedStr["data2"]));
+            location.reload();
+        } catch (error) {
+            console.log(error);
+        }
+    });
+    try {
+        if (fileToRead) {
+            reader.readAsText(fileToRead);
+        } else {
+            alert("No file imported.");
+        }
+        
+    } catch (error) {
+        console.log(error);
+    }
 }
