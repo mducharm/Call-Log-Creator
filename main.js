@@ -206,6 +206,7 @@ for (i = 0; i < Object.keys(data).length; i++) {
     var logInputBtn = document.createElement("span");
     logInput.id = dataKeys[i] + "Input";
     logInput.className = "logInput";
+    logInput.placeholder = "Add tagline...";
     logInput.value = data[dataKeys[i]].string;
     // this saves input any time the user types anything in the text box
     logInput.onkeyup = function () {
@@ -521,7 +522,7 @@ function delSection() {
 }
 
 function resetBtn() {
-    if (confirm("Are you sure you wish to reset back to default settings?")) {
+    if (confirm("Are you sure you wish to reset back to default settings? This cannot be reversed.")) {
         localStorage.clear();
         location.reload();
     } else {
