@@ -486,6 +486,7 @@ function newSection() {
 
         // Add section container to main container
         document.getElementById("list-container").appendChild(container);
+        document.getElementById("myInput2").value = ""; //resets input 
 
     }
 }
